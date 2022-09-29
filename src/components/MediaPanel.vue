@@ -129,7 +129,7 @@ function refreshData (page: Pagination) {
 
 function downloadMedia (media: MediaFile) {
   loading.value = true
-  downloadMediaFile(workspaceId, media.file_id).then(res => {
+  downloadMediaFile(workspaceId, media.fingerprint).then(res => {
     if (!res) {
       return
     }

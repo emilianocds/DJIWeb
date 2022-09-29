@@ -11,6 +11,7 @@
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
     "@ant-design/icons-vue": "^6.0.1",
+    "@fawmi/vue-google-maps": "0.9.67",
     "@vitejs/plugin-legacy": "^1.6.2",
     "agora-rtc-sdk-ng": "^4.12.1",
     "ant-design-vue": "^2.2.8",
@@ -58,6 +59,7 @@
       "include": [
         "@amap/amap-jsapi-loader",
         "@ant-design/icons-vue",
+        "@fawmi/vue-google-maps",
         "@vue/reactivity",
         "agora-rtc-sdk-ng",
         "ant-design-vue",
@@ -101,6 +103,7 @@
         "vconsole",
         "vue",
         "vue-router",
+        "vuejs-google-maps",
         "vuex"
       ]
     }

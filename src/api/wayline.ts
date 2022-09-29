@@ -24,12 +24,11 @@ export const downloadWaylineFile = async function (workspaceId: string, waylineI
   if (result.data.type === 'application/json') {
     const reader = new FileReader()
     reader.onload = function (e) {
-      let text = reader.result as string
+      const text = reader.result as string
       const result = JSON.parse(text)
       message.error(result.message)
     }
     reader.readAsText(result.data, 'utf-8')
-    return
   } else {
     return result.data
   }

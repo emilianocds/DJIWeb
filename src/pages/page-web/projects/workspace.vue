@@ -9,6 +9,7 @@
     <div class="right">
       <div class="map-wrapper">
         <GMap />
+        <!-- <Test/> -->
       </div>
       <div class="media-wrapper" v-if="root.$route.name === ERouterName.MEDIA">
         <MediaPanel />
@@ -29,6 +30,7 @@ import { EBizCode, ERouterName } from '/@/types'
 import { getRoot } from '/@/root'
 import { useMyStore } from '/@/store'
 import { useConnectWebSocket } from '/@/hooks/use-connect-websocket'
+import Test from './test.vue'
 
 const root = getRoot()
 const store = useMyStore()

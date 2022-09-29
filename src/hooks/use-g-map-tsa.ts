@@ -12,8 +12,8 @@ export function deviceTsaUpdate () {
     [key: string]: string
   } = {
     'sub-device': '/@/assets/icons/drone.png',
-    'gateway': '/@/assets/icons/rc.png',
-    'dock': '/@/assets/icons/dock.png'
+    gateway: '/@/assets/icons/rc.png',
+    dock: '/@/assets/icons/dock.png'
   }
   const markers = store.state.markerInfo.coverMap
   const paths = store.state.markerInfo.pathMap

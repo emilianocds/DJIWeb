@@ -11,16 +11,16 @@ export const getMediaFiles = async function (wid: string, pagination: IPage): Pr
 // Download Media File
 export const downloadMediaFile = async function (workspaceId: string, fileId: string): Promise<any> {
   const url = `${HTTP_PREFIX}/files/${workspaceId}/file/${fileId}/url`
+  console.log('emi ' + url)
   const result = await request.get(url, { responseType: 'blob' })
   if (result.data.type === 'application/json') {
     const reader = new FileReader()
     reader.onload = function (e) {
-      let text = reader.result as string
+      const text = reader.result as string
       const result = JSON.parse(text)
       message.error(result.message)
     }
     reader.readAsText(result.data, 'utf-8')
-    return
   } else {
     return result.data
   }
