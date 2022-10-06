@@ -2,6 +2,9 @@
 <template>
   <button class="clear" v-on:click="clearShapes">Clear</button>
   <button class="clear" v-on:click="deleteShape(0)">Remove</button>
+  <div v-for="item in overlayShapes" :key="item">
+    <div v-on:click="deleteShape(item)">{{ item.type }}, {{item.position}}</div>
+  </div>
     <div id="map"></div>
 </template>
 
@@ -26,19 +29,17 @@ export default defineComponent({
     }
   },
   methods: {
-    addShape: function (shape) {
+    addShape (shape) {
       this.overlayShapes.push(shape)
     },
+    deleteShape (shapeRef) {
+      alert(`Are you sure you want to delete ${shapeRef.type}`)
+      shapeRef.setMap(null)
+      console.log('$overlayShapes1--', this.overlayShapes.length)
 
-    deleteShape: function (index) {
-      if (index < this.overlayShapes.length) {
-        console.log('this.overlayShapes', this.overlayShapes[index].setMap)
-        this.overlayShapes[index].setMap(null)
-        this.overlayShapes.splice(index, 1)
-        console.log('this.overlayShapes', this.overlayShapes)
-      }
+      this.overlayShapes.splice(this.overlayShapes.indexOf(shapeRef), 1)
+      console.log('$overlayShapes2--', this.overlayShapes.length)
     },
-
     clearShapes: function () {
       console.log('clearMap')
       if (confirm('Want to clear all overlayShapes?')) {
@@ -48,12 +49,12 @@ export default defineComponent({
     },
   },
   mounted: async function () {
+    const that = this
     const google = await loader.load()
     this.initialMap = new google.maps.Map(document.getElementById('map'), {
       center: { lat: -34.88338238343086, lng: -56.14534138394627 }, // INITIAL POSITION (MONTEVIDEO)
       zoom: 10
     })
-    this.overlayShapes = []
     // add drawing menu
     this.drawingManager = new google.maps.drawing.DrawingManager({
       drawingMode: google.maps.drawing.OverlayType.MARKER,
@@ -68,30 +69,37 @@ export default defineComponent({
 
         ]
       },
+      markerOptions: {
+        strokeWeight: 4,
+        clickable: true,
+        editable: true,
+        draggable: true,
+        zIndex: 1
+      },
       circleOptions: {
         strokeWeight: 1,
-        clickable: false,
+        clickable: true,
         editable: true,
         draggable: true,
         zIndex: 1
       },
       polygonOptions: {
         strokeWeight: 1,
-        clickable: false,
+        clickable: true,
         editable: true,
         draggable: true,
         zIndex: 1
       },
       polylineOptions: {
         strokeWeight: 2,
-        clickable: false,
+        clickable: true,
         editable: true,
         draggable: true,
         zIndex: 1
       },
       rectangleOptions: {
         strokeWeight: 2,
-        clickable: false,
+        clickable: true,
         editable: true,
         draggable: true,
         zIndex: 1
@@ -107,8 +115,14 @@ export default defineComponent({
     google.maps.event.addListener(this.drawingManager, 'overlaycomplete', (event) => {
       console.log('overlaycomplete event type:', event.type)
       console.log('overlay object:', event.overlay)
+      event.overlay.type = event.type
+      that.addShape(event.overlay)
 
-      this.overlayShapes.push(event.overlay)
+      // add event listener to all shapes created to Delete with right click
+      google.maps.event.addListener(event.overlay, 'rightclick', function () {
+        event.overlay.setMap(null)
+        that.overlayShapes.splice(that.overlayShapes.indexOf(event.overlay), 1)
+      })
 
       if (event.type === 'marker') {
         console.log('marker', event.overlay)
