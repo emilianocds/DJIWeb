@@ -68,22 +68,23 @@ const loginBtnDisabled = computed(() => {
 })
 
 const onSubmit = async (e: any) => {
-  localStorage.setItem(ELocalStorageKey.Token, 'mock_access_token')
-  localStorage.setItem(ELocalStorageKey.WorkspaceId, 'mock_workspace_id')
-  localStorage.setItem(ELocalStorageKey.Username, 'mock_username')
-  localStorage.setItem(ELocalStorageKey.UserId, 'mock_user_id')
-  localStorage.setItem(ELocalStorageKey.Flag, 'mock_EUserType.Web')
-  // const result = await login(formState)
-  // if (result.code === 0) {
-  //   localStorage.setItem(ELocalStorageKey.Token, result.data.access_token)
-  //   localStorage.setItem(ELocalStorageKey.WorkspaceId, result.data.workspace_id)
-  //   localStorage.setItem(ELocalStorageKey.Username, result.data.username)
-  //   localStorage.setItem(ELocalStorageKey.UserId, result.data.user_id)
-  //   localStorage.setItem(ELocalStorageKey.Flag, EUserType.Web.toString())
-  //   root.$router.push(ERouterName.MEMBERS)
-  // } else {
-  //   message.error(result.message)
-  // }
+  // MOCK LOGIN
+  // localStorage.setItem(ELocalStorageKey.Token, 'mock_access_token')
+  // localStorage.setItem(ELocalStorageKey.WorkspaceId, 'mock_workspace_id')
+  // localStorage.setItem(ELocalStorageKey.Username, 'mock_username')
+  // localStorage.setItem(ELocalStorageKey.UserId, 'mock_user_id')
+  // localStorage.setItem(ELocalStorageKey.Flag, 'mock_EUserType.Web')
+  const result = await login(formState)
+  if (result.code === 0) {
+    localStorage.setItem(ELocalStorageKey.Token, result.data.access_token)
+    localStorage.setItem(ELocalStorageKey.WorkspaceId, result.data.workspace_id)
+    localStorage.setItem(ELocalStorageKey.Username, result.data.username)
+    localStorage.setItem(ELocalStorageKey.UserId, result.data.user_id)
+    localStorage.setItem(ELocalStorageKey.Flag, EUserType.Web.toString())
+    root.$router.push(ERouterName.MEMBERS)
+  } else {
+    message.error(result.message)
+  }
 }
 
 </script>
