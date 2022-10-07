@@ -1,8 +1,8 @@
 
 <template>
- <div id="shapes-list" >
-  <div v-for="item in overlayShapes" :key="item">
-    <div >{{ item.type }}, {{item.position}}</div>
+ <div id="shapes-list" v-if="overlayShapes.length > 0">
+  <div v-for="(item, index) in overlayShapes" :key="item">
+    <div>{{index + 1}} - {{ this.renderTypeName(item.type) }} {{this.getShapePosition(item)}}</div>
   </div>
 </div>
     <div id="map"></div>
@@ -17,6 +17,13 @@ import { defineComponent } from 'vue'
 const apiKey = import.meta.env.GOOGLE_MAPS_API_KEY || 'AIzaSyCWjSQkpYWRMa93lsB6UbQ8jeEWtH7J43s'
 const options = { libraries: ['drawing'] }
 const loader = new Loader(apiKey, options)
+
+const SHAPES = {
+  circle: 'circle',
+  marker: 'marker',
+  polygon: 'polygon',
+  polyline: 'polyline',
+}
 
 export default defineComponent({
   el: '#gmaps',
@@ -47,6 +54,20 @@ export default defineComponent({
         // TODO: Clear all somehow, worst case: iterate over all shapes and remove one by one
       }
     },
+    renderTypeName: function (typeName) {
+      return typeName.charAt(0).toUpperCase() + typeName.slice(1)
+    },
+    getShapePosition: function (shape) {
+      switch (shape.type) {
+        case SHAPES.circle:
+          return shape?.getCenter?.()
+        case SHAPES.marker:
+          return shape?.getPosition?.()
+        case SHAPES.polygon:
+        case SHAPES.polyline:
+          return shape?.getPath?.().getAt(0).toString()
+      }
+    },
   },
   mounted: async function () {
     const that = this
@@ -66,7 +87,6 @@ export default defineComponent({
           google.maps.drawing.OverlayType.CIRCLE,
           google.maps.drawing.OverlayType.POLYGON,
           google.maps.drawing.OverlayType.POLYLINE,
-
         ]
       },
       markerOptions: {
@@ -158,8 +178,15 @@ export default defineComponent({
 }
 #shapes-list{
   position:absolute;
+  color: rgb(243, 243, 243);
+  background-color: rgba(0, 0, 0, 0.391);
+  /* border: 2px solid rgba(0, 0, 0, 0.373); */
+  border: 2px solid rgba(255, 0, 0, 0.373);
+  border-radius: 5px;
   z-index:2;
-  bottom:20px;
+  bottom:30px;
+  margin-left: 10px;
+  padding: 8px;
 }
 .clear{
   background-color:crimson;
