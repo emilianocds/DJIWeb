@@ -1,10 +1,11 @@
 
 <template>
- <div id="shapes-list" v-if="overlayShapes.length > 0">
-  <div v-for="(item, index) in overlayShapes" :key="item">
-    <div>{{index + 1}} - {{ this.renderTypeName(item.type) }} {{this.getShapePosition(item)}}</div>
+ <div id="shapes-list" v-if="overlayShapes.length > 0" >
+  <div v-for="item in overlayShapes" :key="item">
+    <div > <a @click="item.deleteSpan.onclick" v-html="item.deleteSpan.outerHTML" /> {{ this.renderTypeName(item.type) }}, {{this.getShapePosition(item)}}</div>
   </div>
 </div>
+ <a id="remove-all" v-show="overlayShapes.length > 0">❌ Remove all shapes</a>
     <div id="map"></div>
 </template>
 
@@ -37,15 +38,21 @@ export default defineComponent({
   },
   methods: {
     addShape (shape) {
+      const deleteSpan = document.createElement('span')
+      deleteSpan.innerHTML = '❌  :'
+      // to remove particular shape
+      shape.deleteSpan = deleteSpan
+      deleteSpan.onclick = () => {
+        shape.setMap(null)
+        this.overlayShapes.splice(this.overlayShapes.indexOf(shape), 1)
+      }
+      // I believe adding the google overlay object to Vue state messes it up
       this.overlayShapes.push(shape)
     },
     deleteShape (shapeRef) {
       alert(`Are you sure you want to delete ${shapeRef.type}`)
       shapeRef.setMap(null)
-      console.log('$overlayShapes1--', this.overlayShapes.length)
-
       this.overlayShapes.splice(this.overlayShapes.indexOf(shapeRef), 1)
-      console.log('$overlayShapes2--', this.overlayShapes.length)
     },
     clearShapes: function () {
       console.log('clearMap')
@@ -143,6 +150,13 @@ export default defineComponent({
         event.overlay.setMap(null)
         that.overlayShapes.splice(that.overlayShapes.indexOf(event.overlay), 1)
       })
+      // to remove all shapes
+      document
+        .getElementById('remove-all')
+        .addEventListener('click', function () {
+          event.overlay.setMap(null)
+          that.overlayShapes.splice(that.overlayShapes.indexOf(event.overlay), 1)
+        })
 
       if (event.type === 'marker') {
         console.log('marker', event.overlay)
@@ -188,8 +202,16 @@ export default defineComponent({
   margin-left: 10px;
   padding: 8px;
 }
-.clear{
-  background-color:crimson;
-  color:white;
+#remove-all{
+  position:absolute;
+  margin:5px;
+  left:75%;
+  z-index: 2;
+  background-color:white;
+  color:DimGray;
+  border: none;
 }
+#remove-all:hover{
+  background-color:lightGray;
+  }
 </style>
