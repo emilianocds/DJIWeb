@@ -1,10 +1,10 @@
 
 <template>
-  <button class="clear" v-on:click="clearShapes">Clear</button>
-  <button class="clear" v-on:click="deleteShape(0)">Remove</button>
+ <div id="shapes-list" >
   <div v-for="item in overlayShapes" :key="item">
-    <div v-on:click="deleteShape(item)">{{ item.type }}, {{item.position}}</div>
+    <div >{{ item.type }}, {{item.position}}</div>
   </div>
+</div>
     <div id="map"></div>
 </template>
 
@@ -155,6 +155,11 @@ export default defineComponent({
 <style scoped>
 #map {
   height:100%;
+}
+#shapes-list{
+  position:absolute;
+  z-index:2;
+  bottom:20px;
 }
 .clear{
   background-color:crimson;
