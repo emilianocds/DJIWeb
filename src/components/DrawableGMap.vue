@@ -14,8 +14,9 @@
 // +docs https://developers.google.com/maps/documentation/javascript/reference/drawing
 import { Loader } from 'google-maps'
 import { defineComponent } from 'vue'
+import { CURRENT_CONFIG } from '/@/api/http/config'
 
-const apiKey = import.meta.env.GOOGLE_MAPS_API_KEY || 'AIzaSyCWjSQkpYWRMa93lsB6UbQ8jeEWtH7J43s'
+const apiKey = CURRENT_CONFIG.gmapKey
 const options = { libraries: ['drawing'] }
 const loader = new Loader(apiKey, options)
 
@@ -58,7 +59,6 @@ export default defineComponent({
       console.log('clearMap')
       if (confirm('Want to clear all overlayShapes?')) {
         this.overlayShapes = []
-        // TODO: Clear all somehow, worst case: iterate over all shapes and remove one by one
       }
     },
     renderTypeName: function (typeName) {

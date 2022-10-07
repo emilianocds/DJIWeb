@@ -32,5 +32,7 @@ export const CURRENT_CONFIG = {
   // map
   // You can apply on the AMap website.
   amapKey: 'c0ee23ad2324c26661065de94f5b5676',
+   // Google map key
+  gmapKey: 'AIzaSyCWjSQkpYWRMa93lsB6UbQ8jeEWtH7J43s',
 
 }
