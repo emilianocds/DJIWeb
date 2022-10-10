@@ -2,7 +2,7 @@
 <template>
  <div id="shapes-list" v-if="overlayShapes.length > 0" >
   <div v-for="item in overlayShapes" :key="item">
-    <div > <a @click="item.deleteSpan.onclick" v-html="item.deleteSpan.outerHTML" /> {{ this.renderTypeName(item) }}, {{this.getShapePosition(item)}}</div>
+    <div > <a @click="item.deleteSpan.onclick" v-html="item.deleteSpan.outerHTML" /> <span id="shapes-list-item" @click="this.centerMapToShape(item)">{{ this.renderTypeName(item) }}, {{this.getShapePosition(item)}}</span></div>
   </div>
 </div>
  <a id="remove-all" v-show="overlayShapes.length > 0">❌ Remove all shapes</a>
@@ -81,8 +81,11 @@ export default defineComponent({
           return shape?.getPosition?.()
         case SHAPES.polygon:
         case SHAPES.polyline:
-          return shape?.getPath?.().getAt(0).toString()
+          return shape?.getPath?.().getAt(0)
       }
+    },
+    centerMapToShape: function (shape) {
+      shape.getMap().setCenter(this.getShapePosition(shape))
     },
   },
   mounted: async function () {
@@ -210,6 +213,9 @@ export default defineComponent({
   bottom:30px;
   margin-left: 10px;
   padding: 8px;
+}
+#shapes-list-item{
+  cursor: pointer;
 }
 #remove-all{
   position:absolute;
