@@ -166,6 +166,7 @@ export default defineComponent({
       document
         .getElementById('remove-all')
         .addEventListener('click', function () {
+          that.shapeLabel = 1
           event.overlay.setMap(null)
           that.overlayShapes.splice(that.overlayShapes.indexOf(event.overlay), 1)
         })
