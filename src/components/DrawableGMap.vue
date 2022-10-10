@@ -2,7 +2,7 @@
 <template>
  <div id="shapes-list" v-if="overlayShapes.length > 0" >
   <div v-for="item in overlayShapes" :key="item">
-    <div > <a @click="item.deleteSpan.onclick" v-html="item.deleteSpan.outerHTML" /> <span id="shapes-list-item" @click="this.selectShape(item)">{{ this.renderTypeName(item) }}, {{this.getShapePosition(item)}}</span></div>
+    <div > <a @click="item.deleteSpan.onclick" v-html="item.deleteSpan.outerHTML" /> <span id="shapes-list-item" @mouseover="this.selectShape(item)" @mouseout="this.unSelectShape()" >{{ this.renderTypeName(item) }}, {{this.getShapePosition(item)}}</span></div>
   </div>
 </div>
  <a id="remove-all" v-show="overlayShapes.length > 0">❌ Remove all shapes</a>
@@ -103,8 +103,16 @@ export default defineComponent({
       } else {
         shape.setOptions({ strokeColor: 'blue', fillColor: 'blue' })
       }
-
       this.selectedShape = shape
+    },
+    unSelectShape () {
+      if (this.selectedShape) {
+        if (this.selectedShape.type === SHAPES.marker) {
+          this.selectedShape.setAnimation(null)
+        } else {
+          this.selectedShape.setOptions({ strokeColor: 'black', fillColor: 'black' })
+        }
+      } // last selected is de-selected
     },
   },
   mounted: async function () {
