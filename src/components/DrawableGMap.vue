@@ -2,7 +2,7 @@
 <template>
  <div id="shapes-list" v-if="overlayShapes.length > 0" >
   <div v-for="item in overlayShapes" :key="item">
-    <div > <a @click="item.deleteSpan.onclick" v-html="item.deleteSpan.outerHTML" /> {{ this.renderTypeName(item.type) }}, {{this.getShapePosition(item)}}</div>
+    <div > <a @click="item.deleteSpan.onclick" v-html="item.deleteSpan.outerHTML" /> {{ this.renderTypeName(item) }}, {{this.getShapePosition(item)}}</div>
   </div>
 </div>
  <a id="remove-all" v-show="overlayShapes.length > 0">❌ Remove all shapes</a>
@@ -35,10 +35,16 @@ export default defineComponent({
       overlayShapes: [],
       drawingManager: {},
       initialMap: {},
+      shapeLabel: 1,
     }
   },
   methods: {
     addShape (shape) {
+      shape.id = this.shapeLabel
+      if (shape.type === 'marker') {
+        shape.setLabel(this.shapeLabel.toString())
+      }
+      this.incrementShapeLabel()
       const deleteSpan = document.createElement('span')
       deleteSpan.innerHTML = '❌  :'
       // to remove particular shape
@@ -49,6 +55,9 @@ export default defineComponent({
       }
       // I believe adding the google overlay object to Vue state messes it up
       this.overlayShapes.push(shape)
+    },
+    incrementShapeLabel () {
+      this.shapeLabel++
     },
     deleteShape (shapeRef) {
       alert(`Are you sure you want to delete ${shapeRef.type}`)
@@ -61,8 +70,8 @@ export default defineComponent({
         this.overlayShapes = []
       }
     },
-    renderTypeName: function (typeName) {
-      return typeName.charAt(0).toUpperCase() + typeName.slice(1)
+    renderTypeName: function (shape) {
+      return `${shape.id} - ${shape.type.charAt(0).toUpperCase() + shape.type.slice(1)}`
     },
     getShapePosition: function (shape) {
       switch (shape.type) {
