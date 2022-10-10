@@ -204,12 +204,16 @@ export default defineComponent({
 }
 #remove-all{
   position:absolute;
+  font-size: 11.7px;
+  padding: 3px 4px 3px 4px;
+  border-radius: 2px;
   margin:5px;
-  left:75%;
+  left:55%;
   z-index: 2;
   background-color:white;
   color:DimGray;
   border: none;
+  transform: translateX(35%);
 }
 #remove-all:hover{
   background-color:lightGray;
