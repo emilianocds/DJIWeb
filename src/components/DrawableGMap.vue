@@ -2,7 +2,7 @@
 <template>
  <div id="shapes-list" v-if="overlayShapes.length > 0" >
   <div v-for="item in overlayShapes" :key="item">
-    <div > <a @click="item.deleteSpan.onclick" v-html="item.deleteSpan.outerHTML" /> <span id="shapes-list-item" @click="this.centerMapToShape(item)">{{ this.renderTypeName(item) }}, {{this.getShapePosition(item)}}</span></div>
+    <div > <a @click="item.deleteSpan.onclick" v-html="item.deleteSpan.outerHTML" /> <span id="shapes-list-item" @click="this.selectShape(item)">{{ this.renderTypeName(item) }}, {{this.getShapePosition(item)}}</span></div>
   </div>
 </div>
  <a id="remove-all" v-show="overlayShapes.length > 0">❌ Remove all shapes</a>
@@ -33,9 +33,11 @@ export default defineComponent({
   data: function () {
     return {
       overlayShapes: [],
+      selectedShape: 0,
       drawingManager: {},
       initialMap: {},
       shapeLabel: 1,
+      drone: {},
     }
   },
   methods: {
@@ -87,13 +89,31 @@ export default defineComponent({
     centerMapToShape: function (shape) {
       shape.getMap().setCenter(this.getShapePosition(shape))
     },
+    selectShape (shape) {
+      if (this.selectedShape) {
+        if (this.selectedShape.type === SHAPES.marker) {
+          this.selectedShape.setAnimation(null)
+        } else {
+          this.selectedShape.setOptions({ strokeColor: 'black', fillColor: 'black' })
+        }
+      } // last selected is de-selected
+
+      if (shape.type === SHAPES.marker) {
+        shape.setAnimation('BOUNCE')
+      } else {
+        shape.setOptions({ strokeColor: 'blue', fillColor: 'blue' })
+      }
+
+      this.selectedShape = shape
+    },
   },
   mounted: async function () {
     const that = this
     const google = await loader.load()
     this.initialMap = new google.maps.Map(document.getElementById('map'), {
       center: { lat: -34.88338238343086, lng: -56.14534138394627 }, // INITIAL POSITION (MONTEVIDEO)
-      zoom: 10
+      zoom: 10,
+      streetViewControl: false, // does not seem necessary
     })
     // add drawing menu
     this.drawingManager = new google.maps.drawing.DrawingManager({
@@ -113,7 +133,7 @@ export default defineComponent({
         clickable: true,
         editable: true,
         draggable: true,
-        zIndex: 1
+        zIndex: 1,
       },
       circleOptions: {
         strokeWeight: 1,
@@ -171,30 +191,83 @@ export default defineComponent({
           that.overlayShapes.splice(that.overlayShapes.indexOf(event.overlay), 1)
         })
 
-      if (event.type === 'marker') {
+      if (event.type === SHAPES.marker) {
         console.log('marker', event.overlay)
       }
-      if (event.type === 'circle') {
+      if (event.type === SHAPES.circle) {
         console.log('circle', event.overlay)
       }
-      if (event.type === 'polyline') {
+      if (event.type === SHAPES.polyline) {
         console.log('polyline', event.overlay)
       }
-      if (event.type === 'polygon') {
+      if (event.type === SHAPES.polygon) {
         console.log('polygon', event.overlay)
       }
-      if (event.type === 'rectangle') {
+      if (event.type === SHAPES.polylirectanglene) {
         console.log('rectangle', event.overlay)
       }
     })
-    this.drawingManager.setMap(this.initialMap)
 
+    const coords = [(-34.907232837397544, -56.149853973243474),
+      (-34.90413570697162, -56.153802184913395),
+      (-34.90075688600939, -56.15895202622199),
+      (-34.8982226790612, -56.16324356064582),
+      (-34.89484361483305, -56.16873672470832),
+      (-34.89104200142728, -56.17388656601691),
+      (-34.88738102225599, -56.17920806870246),
+      (-34.883860696148524, -56.18367126450324)]
+
+    const svgMarker = { // TODO: change drone svg path
+      path: 'M10.453 14.016l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM12 2.016q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z',
+      fillColor: 'blue',
+      fillOpacity: 0.6,
+      strokeWeight: 0,
+      rotation: 0,
+      scale: 2,
+      anchor: new google.maps.Point(15, 30),
+    }
+    google.maps.event.addListener(this.initialMap, 'click', function (event) {
+      const result = [event.latLng.lat(), event.latLng.lng()]
+      transition(result)
+    })
+    this.drone = new google.maps.Marker({
+      position: this.initialMap.getCenter(),
+      icon: svgMarker,
+      map: this.initialMap,
+    })
+    const position = this.drone.getPosition()
+    console.log('position', position)
+    const numDeltas = 100
+    const delay = 10 // milliseconds
+    let i = 0
+    let deltaLat
+    let deltaLng
+
+    const transition = (result) => {
+      i = 0
+      deltaLat = (result[0] - position[0]) / numDeltas
+      deltaLng = (result[1] - position[1]) / numDeltas
+      moveDrone()
+    }
+
+    const moveDrone = () => {
+      position[0] += deltaLat
+      position[1] += deltaLng
+      const latlng = new google.maps.LatLng(position[0], position[1])
+      this.drone.setTitle('Latitude:' + position[0] + ' | Longitude:' + position[1])
+      this.drone.setPosition(latlng)
+      if (i !== numDeltas) {
+        i++
+        setTimeout(moveDrone, delay)
+      }
+    }
     //  CONTROLS ARE EVEN MOVABLE :
     // drawingManager.setOptions({
     //   drawingControlOptions: {
     //     position: google.maps.ControlPosition.BOTTOM_LEFT,
     //   }
     // })
+    this.drawingManager.setMap(this.initialMap)
   }
 })
 </script>

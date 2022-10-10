@@ -68,12 +68,6 @@ const loginBtnDisabled = computed(() => {
 })
 
 const onSubmit = async (e: any) => {
-  // MOCK LOGIN
-  // localStorage.setItem(ELocalStorageKey.Token, 'mock_access_token')
-  // localStorage.setItem(ELocalStorageKey.WorkspaceId, 'mock_workspace_id')
-  // localStorage.setItem(ELocalStorageKey.Username, 'mock_username')
-  // localStorage.setItem(ELocalStorageKey.UserId, 'mock_user_id')
-  // localStorage.setItem(ELocalStorageKey.Flag, 'mock_EUserType.Web')
   const result = await login(formState)
   if (result.code === 0) {
     localStorage.setItem(ELocalStorageKey.Token, result.data.access_token)
