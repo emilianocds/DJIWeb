@@ -215,6 +215,9 @@ export default defineComponent({
   margin-left: 10px;
   padding: 8px;
 }
+#shapes-list a{
+  font-size: 12px;
+}
 #shapes-list-item{
   cursor: pointer;
 }
