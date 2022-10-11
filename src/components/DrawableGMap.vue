@@ -195,12 +195,10 @@ export default defineComponent({
       })
 
       google.maps.event.addListener(event.overlay, 'mouseover', function () {
-        console.log('asdasdasd', event.overlay)
         event.overlay.setOptions({ strokeColor: 'blue', fillColor: 'blue' })
         that.shapeOnHover = event.overlay.id
       })
       google.maps.event.addListener(event.overlay, 'mouseout', function () {
-        console.log('asdasdasd', event.overlay)
         event.overlay.setOptions({ strokeColor: 'black', fillColor: 'black' })
         that.shapeOnHover = null
       })
@@ -249,41 +247,49 @@ export default defineComponent({
       scale: 2,
       anchor: new google.maps.Point(15, 30),
     }
-    // google.maps.event.addListener(this.initialMap, 'click', function (event) {
-    //   const result = [event.latLng.lat(), event.latLng.lng()]
-    //   transition(result)
-    // })
-    // this.drone = new google.maps.Marker({
-    //   position: this.initialMap.getCenter(),
-    //   icon: svgMarker,
-    //   map: this.initialMap,
-    // })
-    // const position = this.drone.getPosition()
-    // console.log('position', position)
-    // const numDeltas = 100
-    // const delay = 10 // milliseconds
-    // let i = 0
-    // let deltaLat
-    // let deltaLng
+    google.maps.event.addListener(this.initialMap, 'click', function (event) {
+      console.log('event', event)
+      const result = [event.latLng.lat(), event.latLng.lng()]
+      transition(result)
+    })
 
-    // const transition = (result) => {
-    //   i = 0
-    //   deltaLat = (result[0] - position[0]) / numDeltas
-    //   deltaLng = (result[1] - position[1]) / numDeltas
-    //   moveDrone()
-    // }
+    this.drone = new google.maps.Marker({
+      position: this.initialMap.getCenter(),
+      icon: svgMarker,
+      map: this.initialMap,
+    })
+    const position = this.drone.getPosition()
+    const numDeltas = 100
+    const delay = 10 // milliseconds
+    let i = 0
+    let deltaLat
+    let deltaLng
 
-    // const moveDrone = () => {
-    //   position[0] += deltaLat
-    //   position[1] += deltaLng
-    //   const latlng = new google.maps.LatLng(position[0], position[1])
-    //   this.drone.setTitle('Latitude:' + position[0] + ' | Longitude:' + position[1])
-    //   this.drone.setPosition(latlng)
-    //   if (i !== numDeltas) {
-    //     i++
-    //     setTimeout(moveDrone, delay)
-    //   }
-    // }
+    const transition = (result) => {
+      i = 0
+      deltaLat = (result[0] - position.lat()) / numDeltas
+      deltaLng = (result[1] - position.lng()) / numDeltas
+      console.log('-------', deltaLat, deltaLng)
+      moveDrone()
+    }
+
+    const moveDrone = () => {
+      position[0] += deltaLat
+      position[1] += deltaLng
+      console.log('position:', position)
+      const latlng = new google.maps.LatLng(position[0], position[1])
+      console.log('Latitude:' + position[0] + ' | Longitude:' + position[1])
+      // this.drone.setTitle('Latitude:' + position[0] + ' | Longitude:' + position[1])
+      /* eslint-disable no-debugger */
+      debugger
+      this.drone.setPosition(latlng)
+      // this.drone.setMap(this.initialMap)
+      if (i !== numDeltas) {
+        i++
+        // setTimeout(moveDrone, delay)
+      }
+    }
+
     //  CONTROLS ARE EVEN MOVABLE :
     // drawingManager.setOptions({
     //   drawingControlOptions: {
