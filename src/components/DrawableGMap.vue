@@ -259,6 +259,7 @@ export default defineComponent({
       map: this.initialMap,
     })
     const position = this.drone.getPosition()
+    console.log('this.drone.getPosition()', this.drone.getPosition().toString())
     const numDeltas = 100
     const delay = 10 // milliseconds
     let i = 0
@@ -267,6 +268,9 @@ export default defineComponent({
 
     const transition = (result) => {
       i = 0
+      console.log('result[0]', result[0])
+      console.log('result[1]', result[1])
+
       deltaLat = (result[0] - position.lat()) / numDeltas
       deltaLng = (result[1] - position.lng()) / numDeltas
       console.log('-------', deltaLat, deltaLng)
@@ -274,14 +278,11 @@ export default defineComponent({
     }
 
     const moveDrone = () => {
-      position[0] += deltaLat
-      position[1] += deltaLng
-      console.log('position:', position)
-      const latlng = new google.maps.LatLng(position[0], position[1])
-      console.log('Latitude:' + position[0] + ' | Longitude:' + position[1])
+      const lat = position.lat() + deltaLat
+      const lng = position.lng() + deltaLng
+      const latlng = new google.maps.LatLng(lat, lng)
       // this.drone.setTitle('Latitude:' + position[0] + ' | Longitude:' + position[1])
       /* eslint-disable no-debugger */
-      debugger
       this.drone.setPosition(latlng)
       // this.drone.setMap(this.initialMap)
       if (i !== numDeltas) {
