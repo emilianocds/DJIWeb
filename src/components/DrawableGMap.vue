@@ -259,7 +259,6 @@ export default defineComponent({
       map: this.initialMap,
     })
     const position = this.drone.getPosition()
-    console.log('this.drone.getPosition()', this.drone.getPosition().toString())
     const numDeltas = 100
     const delay = 10 // milliseconds
     let i = 0
@@ -268,9 +267,6 @@ export default defineComponent({
 
     const transition = (result) => {
       i = 0
-      console.log('result[0]', result[0])
-      console.log('result[1]', result[1])
-
       deltaLat = (result[0] - position.lat()) / numDeltas
       deltaLng = (result[1] - position.lng()) / numDeltas
       console.log('-------', deltaLat, deltaLng)
