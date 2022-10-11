@@ -38,6 +38,7 @@ export default defineComponent({
       initialMap: {},
       shapeLabel: 1,
       drone: {},
+      google: {},
     }
   },
   methods: {
@@ -99,7 +100,7 @@ export default defineComponent({
       } // last selected is de-selected
 
       if (shape.type === SHAPES.marker) {
-        shape.setAnimation('BOUNCE')
+        shape.setAnimation(this.google.maps.Animation.BOUNCE)
       } else {
         shape.setOptions({ strokeColor: 'blue', fillColor: 'blue' })
       }
@@ -118,6 +119,7 @@ export default defineComponent({
   mounted: async function () {
     const that = this
     const google = await loader.load()
+    this.google = google
     this.initialMap = new google.maps.Map(document.getElementById('map'), {
       center: { lat: -34.88338238343086, lng: -56.14534138394627 }, // INITIAL POSITION (MONTEVIDEO)
       zoom: 10,
