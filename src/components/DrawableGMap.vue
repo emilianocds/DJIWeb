@@ -2,7 +2,7 @@
 <template>
  <div id="shapes-list" v-if="overlayShapes.length > 0" >
   <div v-for="item in overlayShapes" :key="item">
-    <div > <a @click="item.deleteSpan.onclick" v-html="item.deleteSpan.outerHTML" /> <span id="shapes-list-item" @mouseover="this.selectShape(item)" @mouseout="this.unSelectShape()" >{{ this.renderTypeName(item) }}, {{this.getShapePosition(item)}}</span></div>
+    <div > <a @click="item.deleteSpan.onclick" v-html="item.deleteSpan.outerHTML" /> <span id="shapes-list-item" :class="{ 'shape-on-hover': shapeOnHover === item.id }" @mouseover="this.selectShape(item)" @mouseout="this.unSelectShape()" >{{ this.renderTypeName(item) }}, {{this.getShapePosition(item)}}</span></div>
   </div>
 </div>
  <a id="remove-all" v-show="overlayShapes.length > 0">❌ Remove all shapes</a>
@@ -39,6 +39,7 @@ export default defineComponent({
       shapeLabel: 1,
       drone: {},
       google: {},
+      shapeOnHover: null,
     }
   },
   methods: {
@@ -192,6 +193,18 @@ export default defineComponent({
         event.overlay.setMap(null)
         that.overlayShapes.splice(that.overlayShapes.indexOf(event.overlay), 1)
       })
+
+      google.maps.event.addListener(event.overlay, 'mouseover', function () {
+        console.log('asdasdasd', event.overlay)
+        event.overlay.setOptions({ strokeColor: 'blue', fillColor: 'blue' })
+        that.shapeOnHover = event.overlay.id
+      })
+      google.maps.event.addListener(event.overlay, 'mouseout', function () {
+        console.log('asdasdasd', event.overlay)
+        event.overlay.setOptions({ strokeColor: 'black', fillColor: 'black' })
+        that.shapeOnHover = null
+      })
+
       // to remove all shapes
       document
         .getElementById('remove-all')
@@ -304,6 +317,7 @@ export default defineComponent({
 #shapes-list-item{
   cursor: pointer;
 }
+.shape-on-hover,
 #shapes-list-item:hover{
   color: blue;
 }
