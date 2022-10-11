@@ -220,6 +220,7 @@ export default defineComponent({
       }
       if (event.type === SHAPES.polyline) {
         console.log('polyline', event.overlay)
+        moveDroneThrougLine(event.overlay)
       }
       if (event.type === SHAPES.polygon) {
         console.log('polygon', event.overlay)
@@ -238,7 +239,7 @@ export default defineComponent({
       (-34.88738102225599, -56.17920806870246),
       (-34.883860696148524, -56.18367126450324)]
 
-    const svgMarker = { // TODO: change drone svg path
+    const svgDrone = { // TODO: change drone svg path
       path: 'M10.453 14.016l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM12 2.016q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z',
       fillColor: 'blue',
       fillOpacity: 0.6,
@@ -247,44 +248,30 @@ export default defineComponent({
       scale: 2,
       anchor: new google.maps.Point(15, 30),
     }
-    google.maps.event.addListener(this.initialMap, 'click', function (event) {
-      console.log('event', event)
-      const result = [event.latLng.lat(), event.latLng.lng()]
-      transition(result)
-    })
 
     this.drone = new google.maps.Marker({
       position: this.initialMap.getCenter(),
-      icon: svgMarker,
+      icon: svgDrone,
       map: this.initialMap,
     })
-    const position = this.drone.getPosition()
-    const numDeltas = 100
-    const delay = 10 // milliseconds
-    let i = 0
-    let deltaLat
-    let deltaLng
 
-    const transition = (result) => {
-      i = 0
-      deltaLat = (result[0] - position.lat()) / numDeltas
-      deltaLng = (result[1] - position.lng()) / numDeltas
-      console.log('-------', deltaLat, deltaLng)
-      moveDrone()
-    }
+    // Use the DOM setInterval() function to change the offset of the symbol
+    // at fixed intervals.
+    const moveDroneThrougLine = (line) => {
+      let count = 0
+      line.set('icons', [{
+        icon: svgDrone,
+        offset: '0%',
+      }])
+      const movingInterval = window.setInterval(() => {
+        count = (count + 1) % 100
 
-    const moveDrone = () => {
-      const lat = position.lat() + deltaLat
-      const lng = position.lng() + deltaLng
-      const latlng = new google.maps.LatLng(lat, lng)
-      // this.drone.setTitle('Latitude:' + position[0] + ' | Longitude:' + position[1])
-      /* eslint-disable no-debugger */
-      this.drone.setPosition(latlng)
-      // this.drone.setMap(this.initialMap)
-      if (i !== numDeltas) {
-        i++
-        // setTimeout(moveDrone, delay)
-      }
+        const icons = line.get('icons')
+        console.log('icons', icons)
+        icons[0].offset = count + '%'
+        // if (icon.offset <= 2) clearInterval(movingInterval)
+        line.set('icons', icons)
+      }, 20)
     }
 
     //  CONTROLS ARE EVEN MOVABLE :
