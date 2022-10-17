@@ -8,7 +8,7 @@
     </div>
     <div class="right">
       <div class="map-wrapper">
-        <GMap />
+        <DrawableGMap />
         <!-- <Test/> -->
       </div>
       <div class="media-wrapper" v-if="root.$route.name === ERouterName.MEDIA">
@@ -25,7 +25,8 @@
 import Sidebar from '/@/components/common/sidebar.vue'
 import MediaPanel from '/@/components/MediaPanel.vue'
 import TaskPanel from '/@/components/TaskPanel.vue'
-import GMap from '/@/components/GMap.vue'
+import DrawableGMap from '/@/components/DrawableGMap.vue'
+// import GMap from '/@/components/GMap.vue'
 import { EBizCode, ERouterName } from '/@/types'
 import { getRoot } from '/@/root'
 import { useMyStore } from '/@/store'
@@ -128,6 +129,7 @@ useConnectWebSocket(messageHandler)
     width: 100%;
     height: 100%;
     .map-wrapper {
+      position: relative;
       width: 100%;
       height: 100%;
     }
