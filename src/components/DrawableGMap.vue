@@ -195,12 +195,10 @@ export default defineComponent({
       })
 
       google.maps.event.addListener(event.overlay, 'mouseover', function () {
-        console.log('asdasdasd', event.overlay)
         event.overlay.setOptions({ strokeColor: 'blue', fillColor: 'blue' })
         that.shapeOnHover = event.overlay.id
       })
       google.maps.event.addListener(event.overlay, 'mouseout', function () {
-        console.log('asdasdasd', event.overlay)
         event.overlay.setOptions({ strokeColor: 'black', fillColor: 'black' })
         that.shapeOnHover = null
       })
@@ -222,6 +220,7 @@ export default defineComponent({
       }
       if (event.type === SHAPES.polyline) {
         console.log('polyline', event.overlay)
+        moveDroneThrougLine(event.overlay)
       }
       if (event.type === SHAPES.polygon) {
         console.log('polygon', event.overlay)
@@ -240,7 +239,7 @@ export default defineComponent({
       (-34.88738102225599, -56.17920806870246),
       (-34.883860696148524, -56.18367126450324)]
 
-    const svgMarker = { // TODO: change drone svg path
+    const svgDrone = { // TODO: change drone svg path
       path: 'M10.453 14.016l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM12 2.016q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z',
       fillColor: 'blue',
       fillOpacity: 0.6,
@@ -249,41 +248,31 @@ export default defineComponent({
       scale: 2,
       anchor: new google.maps.Point(15, 30),
     }
-    // google.maps.event.addListener(this.initialMap, 'click', function (event) {
-    //   const result = [event.latLng.lat(), event.latLng.lng()]
-    //   transition(result)
-    // })
-    // this.drone = new google.maps.Marker({
-    //   position: this.initialMap.getCenter(),
-    //   icon: svgMarker,
-    //   map: this.initialMap,
-    // })
-    // const position = this.drone.getPosition()
-    // console.log('position', position)
-    // const numDeltas = 100
-    // const delay = 10 // milliseconds
-    // let i = 0
-    // let deltaLat
-    // let deltaLng
 
-    // const transition = (result) => {
-    //   i = 0
-    //   deltaLat = (result[0] - position[0]) / numDeltas
-    //   deltaLng = (result[1] - position[1]) / numDeltas
-    //   moveDrone()
-    // }
+    this.drone = new google.maps.Marker({
+      position: this.initialMap.getCenter(),
+      icon: svgDrone,
+      map: this.initialMap,
+    })
 
-    // const moveDrone = () => {
-    //   position[0] += deltaLat
-    //   position[1] += deltaLng
-    //   const latlng = new google.maps.LatLng(position[0], position[1])
-    //   this.drone.setTitle('Latitude:' + position[0] + ' | Longitude:' + position[1])
-    //   this.drone.setPosition(latlng)
-    //   if (i !== numDeltas) {
-    //     i++
-    //     setTimeout(moveDrone, delay)
-    //   }
-    // }
+    // Use the DOM setInterval() function to change the offset of the symbol
+    // at fixed intervals.
+    const moveDroneThrougLine = (line) => {
+      let count = 0
+      line.set('icons', [{
+        icon: svgDrone,
+        offset: '0%',
+      }])
+      const movingInterval = window.setInterval(() => {
+        count = (count + 1) % 100
+
+        const icons = line.get('icons')
+        icons[0].offset = count + '%'
+        // if (icon.offset <= 2) clearInterval(movingInterval)
+        line.set('icons', icons)
+      }, 20)
+    }
+
     //  CONTROLS ARE EVEN MOVABLE :
     // drawingManager.setOptions({
     //   drawingControlOptions: {
