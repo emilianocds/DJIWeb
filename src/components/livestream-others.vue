@@ -221,7 +221,7 @@ const onStart = async () => {
   switch (livetypeSelected.value) {
     case 1: {
       // RTMP
-      liveURL = config.rtmpURL + timestamp
+      liveURL = config.rtmpURL
       break
     }
     case 2: {
@@ -237,6 +237,7 @@ const onStart = async () => {
       console.warn('warning: live type is not correct!!!')
       break
   }
+  console.log('emi' + liveURL)
   await startLivestream({
     url: liveURL,
     video_id: videoId.value,
@@ -272,7 +273,8 @@ const onStart = async () => {
           '&password:' +
           res.data.password
       } else if (livetypeSelected.value === 1) {
-        const url = res.data.url
+        // const url = res.data.url
+        const url = 'rtmp://192.168.10.19/live/1664400732504'
         const videoElement = videowebrtc.value
         console.log('start live:', url)
         console.log(videoElement)
@@ -287,7 +289,7 @@ const onStart = async () => {
       }
     })
     .catch(err => {
-      console.error(err)
+      console.error('emi ' + err)
     })
 }
 const onStop = () => {

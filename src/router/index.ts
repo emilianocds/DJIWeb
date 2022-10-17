@@ -62,6 +62,10 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('/@/pages/page-web/projects/tsa.vue')
       },
       {
+        path: '/test',
+        component: () => import('/@/pages/page-web/projects/test.vue')
+      },
+      {
         path: '/' + ERouterName.LAYER,
         name: ERouterName.LAYER,
         component: () => import('/@/pages/page-web/projects/layer.vue')

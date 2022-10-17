@@ -11,10 +11,12 @@
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
     "@ant-design/icons-vue": "^6.0.1",
+    "@fawmi/vue-google-maps": "0.9.67",
     "@vitejs/plugin-legacy": "^1.6.2",
     "agora-rtc-sdk-ng": "^4.12.1",
     "ant-design-vue": "^2.2.8",
     "axios": "^0.21.1",
+    "google-maps": "^4.3.3",
     "mitt": "^3.0.0",
     "query-string": "^7.0.1",
     "reconnecting-websocket": "^4.4.0",
@@ -27,6 +29,7 @@
     "vue-cookies": "^1.7.4",
     "vue-i18n": "^9.1.6",
     "vue-router": "4",
+    "vuejs-google-maps": "^0.2.0",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
@@ -58,6 +61,7 @@
       "include": [
         "@amap/amap-jsapi-loader",
         "@ant-design/icons-vue",
+        "@fawmi/vue-google-maps",
         "@vue/reactivity",
         "agora-rtc-sdk-ng",
         "ant-design-vue",
@@ -95,12 +99,14 @@
         "ant-design-vue/es/tooltip/style/css",
         "ant-design-vue/es/tree/style/css",
         "axios",
+        "google-maps",
         "mitt",
         "moment",
         "reconnecting-websocket",
         "vconsole",
         "vue",
         "vue-router",
+        "vuejs-google-maps",
         "vuex"
       ]
     }

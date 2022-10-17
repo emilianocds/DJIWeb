@@ -29,10 +29,10 @@ export function useGMapCover () {
     } = {
       '2d8cf0': pin2d8cf0,
       '19be6b': pin19be6b,
-      '212121': pin212121,
-      'b620e0': pinb620e0,
-      'e23c39': pine23c39,
-      'ffbb00': pineffbb00,
+      212121: pin212121,
+      b620e0: pinb620e0,
+      e23c39: pine23c39,
+      ffbb00: pineffbb00,
     }
     const iconName = (color?.replaceAll('#', '') || '').toLocaleLowerCase()
     return new AMap.Icon({
